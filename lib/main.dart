@@ -1,7 +1,9 @@
 /// Flutter関係のインポート
 import 'package:flutter/material.dart';
 
-import 'package:english_words/english_words.dart';
+// 各ページのインポート
+import 'package:my_app/normal_counter_page.dart';
+import 'package:my_app/random_words.dart';
 
 void main() async {
 
@@ -23,23 +25,15 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.black,
         ),
       ),
-      home: RandomWords()
-      // home: const MyHomePage(title: 'こんにちは')
+      // home: RandomWords()
+      home: const MyHomePage(title: 'ホームページ')
     );
   }
 }
 
+// ホーム画面
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -48,162 +42,84 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have clicked fdsfasdfa the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+      // body: Center(
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     children: <Widget>[
+      //       const Text(
+      //         'You have clicked fdsfasdfa the button this many times:',
+      //       ),
+      //       Text(
+      //         '$_counter',
+      //         style: Theme.of(context).textTheme.headline4,
+      //       ),
+      //     ],
+      //   ),
+      // ),
+      body: ListView(
+        padding: const EdgeInsets.all(10),
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+
+          // 各ページへの遷移
+          const _PagePushButton(
+            buttonTitle: 'ノーマルカウンター',
+            pagename: NormalCounterPage(),
+          ),
+
+          const Padding(
+            padding: EdgeInsets.all(10),
+          ),
+
+          const _PagePushButton(
+            buttonTitle: 'ランダムワード',
+            pagename: RandomWords(),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
 
-class RandomWords extends StatefulWidget {
-  const RandomWords({super.key});
 
-  @override
-  State<RandomWords> createState() => _RandomWordsState();
-}
+/// ページ遷移のボタン
+class _PagePushButton extends StatelessWidget {
+  const _PagePushButton({
+    Key? key,
+    required this.buttonTitle,
+    required this.pagename,
+    this.bgColor = Colors.blue,
+  }) : super(key: key);
 
-class _RandomWordsState extends State<RandomWords> {
-  final _suggestions = <WordPair>[];
-  final _saved = <WordPair>{}; 
-  final _biggerFont = const TextStyle(fontSize: 18);
+  final String buttonTitle;
+  final dynamic pagename;
+  final Color bgColor;
 
   @override
   Widget build(BuildContext context) {
-    void _pushSaved() {
-      Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (context) {
-            final tiles = _saved.map((pair) {
-              return ListTile(
-                title: Text(
-                  pair.asPascalCase,
-                  style: _biggerFont,
-                ),
-              );
-            });
-
-            final divided = tiles.isNotEmpty
-              ? ListTile.divideTiles(
-                context: context,
-                tiles: tiles,
-              ).toList()
-              : <Widget>[];
-            
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Saved Suggestions'),
-              ),
-              body: ListView(children: divided),
-            );
-          },
-        )
-      );
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Startup Name Generator'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.list),
-            onPressed: _pushSaved,
-            tooltip: 'Saved Suggestions',
-          ),
-        ],
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(bgColor),
       ),
-      body:
-        ListView.builder(
-          padding: const EdgeInsets.all(16.0),
-          itemBuilder: (context, i) {
-            if (i.isOdd) return const Divider(); /*2*/
-
-            final index = i ~/ 2; /*3*/
-            if (index >= _suggestions.length) {
-              _suggestions.addAll(generateWordPairs().take(10)); /*4*/
-            }
-            final alreadySaved = _saved.contains(_suggestions[index]);
-
-            return ListTile(
-              title: Text(
-                _suggestions[index].asPascalCase,
-                style: _biggerFont,
-              ),
-              trailing: Icon(
-                alreadySaved ? Icons.favorite : Icons.favorite_border,
-                color: alreadySaved ? Colors.red : null,
-                semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
-              ),
-              onTap: () {
-                setState(() {
-                  if (alreadySaved) {
-                    _saved.remove(_suggestions[index]);
-                  } else {
-                    _saved.add(_suggestions[index]);
-                  }
-                });
-              },
-            );
-          },
-        ),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        child: Text(buttonTitle),
+      ),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => pagename),
+        );
+      },
     );
   }
 }
