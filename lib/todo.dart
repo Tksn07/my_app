@@ -30,8 +30,7 @@ class _MyTodo extends State<Todo> {
             if (snapshot.hasData) {
               return ListView(
                 children: snapshot.data!.docs.map((doc) {
-                  final data = doc.data()! as Map<String, dynamic>;
-                  return _buildListItem(context, data['title']);
+                  return _buildListItem(context, doc);
                 }).toList(),
               );
              } else {
@@ -48,7 +47,7 @@ class _MyTodo extends State<Todo> {
             context,
             MaterialPageRoute(
             settings: const RouteSettings(name: "/new"),
-            builder: (BuildContext context) => InputForm()
+            builder: (BuildContext context) => InputForm(doc: null)
             ),
           );
         }
@@ -56,7 +55,9 @@ class _MyTodo extends State<Todo> {
     );
   }
 
-  Widget _buildListItem(BuildContext context, String title) {
+  Widget _buildListItem(BuildContext context, DocumentSnapshot doc) {
+    final data = doc.data()! as Map<String, dynamic>;
+
     return Center(
       child: Card(
         elevation: 0,
@@ -69,8 +70,20 @@ class _MyTodo extends State<Todo> {
         child: SizedBox(
           width: 500,
           height: 80,
-          child: Center(
-            child: Text(title)
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(data['title']),
+              TextButton(
+                child: const Text('編集'),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    settings: const RouteSettings(name: '/edit'),
+                    builder: (BuildContext context) => InputForm(doc: doc)
+                  ));
+                },
+              )
+            ]
           ),
         ),
       ),

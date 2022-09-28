@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class InputForm extends StatefulWidget {
-  const InputForm({super.key});
+  final DocumentSnapshot? doc;
+  // 引数の追加
+  InputForm({super.key, this.doc});
 
   @override
   _MyInputFormState createState() => _MyInputFormState();
@@ -15,11 +17,18 @@ class _FormData {
 
 class _MyInputFormState extends State<InputForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final DocumentReference _mainReference = FirebaseFirestore.instance.collection('todo').doc();
+  DocumentReference _mainReference = FirebaseFirestore.instance.collection('todo').doc();
   final _FormData _data = _FormData();
 
   @override
   Widget build(BuildContext context) {
+    final data = widget.doc?.data()! as Map<String, dynamic>;
+
+    if (widget.doc != null) {
+      _data.title = data['title']!;
+      _mainReference = FirebaseFirestore.instance.collection('todo').doc(widget.doc?.id);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('タスク入力'),
