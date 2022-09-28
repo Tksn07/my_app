@@ -39,6 +39,12 @@ class _MyTodo extends State<Todo> {
           }
         )
       ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          print("新規作成ボタンを押しました");
+        }
+      ),
     );
   }
 
