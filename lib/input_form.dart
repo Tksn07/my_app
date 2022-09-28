@@ -22,16 +22,29 @@ class _MyInputFormState extends State<InputForm> {
 
   @override
   Widget build(BuildContext context) {
-    final data = widget.doc?.data()! as Map<String, dynamic>;
+    bool deleteFlg = false;
 
     if (widget.doc != null) {
+      final data = widget.doc?.data()! as Map<String, dynamic>;
       _data.title = data['title']!;
       _mainReference = FirebaseFirestore.instance.collection('todo').doc(widget.doc?.id);
+      deleteFlg = true;
     }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('タスク入力'),
+        actions: [
+          !deleteFlg ? const Spacer() : IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              print("削除しました。");
+
+              _mainReference.delete();
+              Navigator.pop(context);
+            }
+          )
+        ],
       ),
       body: SafeArea(
         child:

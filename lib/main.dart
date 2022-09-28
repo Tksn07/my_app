@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Startup Name Generator',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
