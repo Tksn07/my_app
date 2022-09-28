@@ -22,9 +22,8 @@ class _MyInputFormState extends State<InputForm> {
 
   @override
   Widget build(BuildContext context) {
-    final data = widget.doc?.data()! as Map<String, dynamic>;
-
     if (widget.doc != null) {
+      final data = widget.doc?.data()! as Map<String, dynamic>;
       _data.title = data['title']!;
       _mainReference = FirebaseFirestore.instance.collection('todo').doc(widget.doc?.id);
     }
