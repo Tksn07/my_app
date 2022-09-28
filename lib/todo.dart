@@ -1,6 +1,7 @@
-/*---------- Add Start ----------*/
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'input_form.dart';
 
 
 class Todo extends StatefulWidget {
@@ -43,6 +44,13 @@ class _MyTodo extends State<Todo> {
         child: const Icon(Icons.add),
         onPressed: () {
           print("新規作成ボタンを押しました");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+            settings: const RouteSettings(name: "/new"),
+            builder: (BuildContext context) => InputForm()
+            ),
+          );
         }
       ),
     );
