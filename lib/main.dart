@@ -1,15 +1,23 @@
 /// Flutter関係のインポート
 import 'package:flutter/material.dart';
 
+// Firebase関係のインポート
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 // 各ページのインポート
 import 'package:my_app/normal_counter_page.dart';
 import 'package:my_app/random_words.dart';
+import 'package:my_app/todo.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -49,20 +57,6 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      // body: Center(
-      //   child: Column(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     children: <Widget>[
-      //       const Text(
-      //         'You have clicked fdsfasdfa the button this many times:',
-      //       ),
-      //       Text(
-      //         '$_counter',
-      //         style: Theme.of(context).textTheme.headline4,
-      //       ),
-      //     ],
-      //   ),
-      // ),
       body: ListView(
         padding: const EdgeInsets.all(10),
         children: <Widget>[
@@ -83,6 +77,15 @@ class _MyHomePageState extends State<MyHomePage> {
           const _PagePushButton(
             buttonTitle: 'ランダムワード',
             pagename: RandomWords(),
+          ),
+
+          const Padding(
+            padding: EdgeInsets.all(10),
+          ),
+
+          const _PagePushButton(
+            buttonTitle: 'TODOリスト',
+            pagename: Todo(),
           ),
         ],
       ),
