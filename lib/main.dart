@@ -1,9 +1,8 @@
-// Copyright 2018 The Flutter team. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
-import 'package:english_words/english_words.dart';
+/// Flutter関係のインポート
 import 'package:flutter/material.dart';
+
+// 各ページのインポート
+import 'package:my_app/random_words.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,8 +11,10 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'Startup Name Generator',
       theme: ThemeData(
@@ -22,102 +23,76 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.black,
         ),
       ),
-      home: const RandomWords(),
+     home: const MyHomePage(title: 'ホームページ')
     );
   }
 }
 
-class _RandomWordsState extends State<RandomWords> {
-  final _suggestions = <WordPair>[];
-  final _saved = <WordPair>{};
-  final _biggerFont = const TextStyle(fontSize: 18);
+// ホーム画面
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Startup Name Generator'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.list),
-            onPressed: _pushSaved,
-            tooltip: 'Saved Suggestions',
+        title: Text(widget.title),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(10),
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+
+          const _PagePushButton(
+            buttonTitle: 'ランダムワード',
+            pagename: RandomWords(),
           ),
         ],
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: (context, i) {
-          if (i.isOdd) return const Divider();
-
-          final index = i ~/ 2;
-          if (index >= _suggestions.length) {
-            _suggestions.addAll(generateWordPairs().take(10));
-          }
-
-          final alreadySaved = _saved.contains(_suggestions[index]);
-
-          return ListTile(
-            title: Text(
-              _suggestions[index].asPascalCase,
-              style: _biggerFont,
-            ),
-            trailing: Icon(
-              alreadySaved ? Icons.favorite : Icons.favorite_border,
-              color: alreadySaved ? Colors.red : null,
-              semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
-            ),
-            onTap: () {
-              setState(() {
-                if (alreadySaved) {
-                  _saved.remove(_suggestions[index]);
-                } else {
-                  _saved.add(_suggestions[index]);
-                }
-              });
-            },
-          );
-        },
-      ),
-    );
-  }
-
-  void _pushSaved() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (context) {
-          final tiles = _saved.map(
-            (pair) {
-              return ListTile(
-                title: Text(
-                  pair.asPascalCase,
-                  style: _biggerFont,
-                ),
-              );
-            },
-          );
-          final divided = tiles.isNotEmpty
-              ? ListTile.divideTiles(
-                  context: context,
-                  tiles: tiles,
-                ).toList()
-              : <Widget>[];
-
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Saved Suggestions'),
-            ),
-            body: ListView(children: divided),
-          );
-        },
       ),
     );
   }
 }
 
-class RandomWords extends StatefulWidget {
-  const RandomWords({super.key});
+
+// ページ遷移のボタン
+class _PagePushButton extends StatelessWidget {
+  const _PagePushButton({
+    Key? key,
+    required this.buttonTitle,
+    required this.pagename,
+    this.bgColor = Colors.blue,
+  }) : super(key: key);
+
+  final String buttonTitle;
+  final dynamic pagename;
+  final Color bgColor;
 
   @override
-  State<RandomWords> createState() => _RandomWordsState();
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(bgColor),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        child: Text(buttonTitle),
+      ),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => pagename),
+        );
+      },
+    );
+  }
 }
