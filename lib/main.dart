@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // 各ページのインポート
+import 'package:my_app/normal_counter_page.dart';
 import 'package:my_app/random_words.dart';
 
 void main() {
@@ -51,6 +52,15 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
+          ),
+
+          const _PagePushButton(
+            buttonTitle: 'ノーマルカウンター',
+            pagename: NormalCounterPage(),
+          ),
+
+          const Padding(
+            padding: EdgeInsets.all(10),
           ),
 
           const _PagePushButton(
